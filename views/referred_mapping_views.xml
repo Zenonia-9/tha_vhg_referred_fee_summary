@@ -61,15 +61,20 @@
         </field>
     </record>
 
-    <!-- Menu: Accounting > Configuration > Referred Summary > Referred Mapping -->
+    <!-- Accounting > Configuration > Referred Summary > Referred Mapping
+         Placed after the standard Accounting group (account_account_menu, sequence 10)
+         and before Invoicing (sequence 20). Configuration itself is
+         account.group_account_manager. -->
     <menuitem id="menu_referred_summary_root"
               name="Referred Summary"
               parent="account.menu_finance_configuration"
-              sequence="100"/>
+              groups="account.group_account_manager"
+              sequence="15"/>
 
     <menuitem id="menu_referred_mapping"
               name="Referred Mapping"
               parent="menu_referred_summary_root"
               action="action_referred_mapping_group"
+              groups="account.group_account_manager"
               sequence="10"/>
 </odoo>

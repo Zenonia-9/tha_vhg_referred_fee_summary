@@ -3,91 +3,170 @@
     <template id="report_referred_fee_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <!-- Header -->
-                        <div class="text-center mb-4">
-                            <h2><strong>VICTORIA HOSPITAL</strong></h2>
-                            <h3><strong>Referred fees</strong></h3>
+                <div class="article">
+                    <style>
+                        html, body { height: auto !important; }
+                        body.container, .container {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+                        }
+                        .header,
+                        #minimal_layout_report_headers,
+                        .o_report_layout_boxed,
+                        .o_company_letterhead,
+                        .o_internal_company,
+                        .o_company_tagline,
+                        img[src*="logo"] {
+                            display: none !important;
+                            height: 0 !important;
+                            overflow: hidden !important;
+                        }
+                        .rf-wrap {
+                            font-family: Arial, Helvetica, sans-serif;
+                            font-size: 13px;
+                            color: #000;
+                        }
+                        .rf-top {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 0 0 2px 0;
+                        }
+                        .rf-top td {
+                            border: none;
+                            padding: 0;
+                            vertical-align: top;
+                            font-size: 12px;
+                        }
+                        .rf-hospital {
+                            text-align: center;
+                            letter-spacing: 4px;
+                            font-size: 13px;
+                            font-weight: 600;
+                            margin: 0 0 10px 0;
+                        }
+                        .rf-meta-left { text-align: left; white-space: nowrap; width: 28%; }
+                        .rf-meta-center { text-align: center; width: 44%; }
+                        .rf-meta-right { text-align: right; white-space: nowrap; width: 28%; }
+                        .rf-title {
+                            font-size: 20px;
+                            font-weight: 700;
+                            margin: 0;
+                        }
+                        .rf-range {
+                            font-size: 13px;
+                            font-weight: 700;
+                            margin: 4px 0 12px 0;
+                        }
+                        .rf-dr {
+                            font-size: 14px;
+                            margin: 0 0 2px 0;
+                        }
+                        .rf-dr .lbl { font-weight: 700; text-decoration: underline; }
+                        .rf-dr .val { font-weight: 700; text-decoration: underline; }
+                        .rf-rule {
+                            border: none;
+                            border-top: 2px solid #000;
+                            margin: 2px 0 14px 0;
+                        }
+                        table.rf-lines {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        table.rf-lines th,
+                        table.rf-lines td {
+                            border: none;
+                            padding: 3px 8px;
+                            font-size: 13px;
+                        }
+                        table.rf-lines th {
+                            font-weight: 700;
+                            text-decoration: underline;
+                        }
+                        table.rf-lines th.amt,
+                        table.rf-lines td.amt {
+                            text-align: right;
+                            white-space: nowrap;
+                            width: 30%;
+                        }
+                        table.rf-lines td.desc { padding-left: 28px; }
+                        .rf-sub td {
+                            padding-top: 14px;
+                        }
+                        .rf-sub .box {
+                            display: inline-block;
+                            background: #00FFFF;
+                            font-weight: 700;
+                            padding: 2px 10px;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        .rf-sub .box.amt {
+                            min-width: 140px;
+                            text-align: right;
+                        }
+                    </style>
+                    <div class="footer" style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">
+                        <div style="text-align: right;">Page: <span class="page"/> of <span class="topage"/></div>
+                    </div>
+                    <div class="rf-wrap">
+                        <div class="rf-hospital">VICTORIA HOSPITAL</div>
+                        <table class="rf-top">
+                            <tr>
+                                <td class="rf-meta-left">
+                                    <span t-esc="o.print_time()"/>
+                                    &#160;&#160;&#160;
+                                    <span t-esc="o.print_date()"/>
+                                </td>
+                                <td class="rf-meta-center">
+                                    <div class="rf-title">Referred fees</div>
+                                </td>
+                                <td class="rf-meta-right">
+                                    Page: <span class="page"/> of <span class="topage"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="rf-meta-center rf-range">
+                            Between
+                            <t t-esc="o.print_date_from()"/>
+                            And
+                            <t t-esc="o.print_date_to()"/>
                         </div>
-
-                        <!-- Date Range -->
-                        <div class="text-center mb-3">
-                            <strong>
-                                Between
-                                <span t-field="o.date_from" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
-                                And
-                                <span t-field="o.date_to" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
-                            </strong>
+                        <div class="rf-dr">
+                            <span class="lbl">Dr Name:</span>
+                            &#160;
+                            <span class="val" t-esc="o.partner_id.name or ''"/>
                         </div>
-
-                        <!-- Dr Name -->
-                        <div class="mb-3">
-                            <strong>Dr Name: </strong>
-                            <span t-field="o.partner_id.name"/>
-                        </div>
-
-                        <hr/>
-
-                        <!-- Group Summary Table -->
-                        <table class="table table-sm mt-3">
+                        <hr class="rf-rule"/>
+                        <table class="rf-lines">
                             <thead>
                                 <tr>
-                                    <th><strong>Description</strong></th>
-                                    <th class="text-end"><strong>Amount (MMK)</strong></th>
+                                    <th>Description</th>
+                                    <th class="amt">Amount &#160;(MMK)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="o.group_line_ids" t-as="line">
                                     <tr>
-                                        <td><span t-field="line.group_name"/></td>
-                                        <td class="text-end">
-                                            <span t-field="line.amount"
-                                                  t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
+                                        <td class="desc"><span t-esc="line.group_name or ''"/></td>
+                                        <td class="amt">
+                                            <span t-esc="'{:,.2f}'.format(line.amount)"/>
                                         </td>
                                     </tr>
                                 </t>
-                            </tbody>
-                            <tfoot>
-                                <tr class="fw-bold" style="background-color: #00FFFF;">
-                                    <td>Sub total:</td>
-                                    <td class="text-end">
-                                        <span t-esc="sum(o.group_line_ids.mapped('amount'))"
-                                              t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
+                                <tr class="rf-sub">
+                                    <td style="text-align: center;">
+                                        <span class="box">Sub total:</span>
+                                    </td>
+                                    <td class="amt">
+                                        <span class="box amt" t-esc="'{:,.2f}'.format(o.print_subtotal())"/>
                                     </td>
                                 </tr>
-                            </tfoot>
+                            </tbody>
                         </table>
-
-                        <!-- Unmatched Bills (if any) -->
-                        <t t-if="o.unmatched_line_ids">
-                            <h4 class="mt-4">Unmatched Bills</h4>
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Number</th>
-                                        <th>Vendor</th>
-                                        <th>Reference</th>
-                                        <th class="text-end">Amount (MMK)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-foreach="o.unmatched_line_ids" t-as="uline">
-                                        <tr>
-                                            <td><span t-field="uline.move_name"/></td>
-                                            <td><span t-field="uline.partner_id.name"/></td>
-                                            <td><span t-field="uline.ref"/></td>
-                                            <td class="text-end">
-                                                <span t-field="uline.amount"
-                                                      t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
-                                            </td>
-                                        </tr>
-                                    </t>
-                                </tbody>
-                            </table>
-                        </t>
                     </div>
-                </t>
+                </div>
             </t>
         </t>
     </template>

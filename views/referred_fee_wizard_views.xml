@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Wizard Form View -->
     <record id="view_referred_fee_wizard_form" model="ir.ui.view">
         <field name="name">tha.referred.fee.wizard.form</field>
         <field name="model">tha.referred.fee.wizard</field>
         <field name="arch" type="xml">
             <form string="Referred Fee Summary">
+                <field name="bill_ids" invisible="1"/>
                 <group>
                     <group>
                         <field name="date_from" string="Start Date"/>
@@ -44,7 +44,6 @@
         </field>
     </record>
 
-    <!-- Wizard Action -->
     <record id="action_referred_fee_wizard" model="ir.actions.act_window">
         <field name="name">Referred Fee Summary</field>
         <field name="res_model">tha.referred.fee.wizard</field>

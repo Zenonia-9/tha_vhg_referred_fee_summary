@@ -42,8 +42,12 @@ Generates Referred Fee Summary reports (PDF and Excel) from selected vendor bill
 - `tha.referred.fee.wizard.unmatched`: Unmatched bills tracking
 
 ## Security
-- Accountant group: Read/write on mapping, read on wizard
-- Accounting Manager group: Full CRUD on all models
+Uses standard Accounting groups only (no custom privilege/group):
+- Billing (`account.group_account_invoice`): create/read/write the wizard; read/write mapping (no unlink)
+- Accounting Administrator (`account.group_account_manager`): full CRUD on mapping
+
+The Bills list button is visible to Billing. Mapping menus sit under
+Accounting > Configuration (Administrator) after the Accounting group.
 
 ## Author
 Thein Htoo Aung

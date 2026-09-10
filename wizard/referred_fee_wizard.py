@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from odoo.tools import format_date
 
 
 class ThaReferredFeeWizard(models.TransientModel):
@@ -20,7 +21,7 @@ class ThaReferredFeeWizard(models.TransientModel):
     def create(self, vals_list):
         wizards = super().create(vals_list)
         for wizard in wizards:
-            if wizard.bill_ids:
+            if wizard.bill_ids and not wizard.group_line_ids and not wizard.unmatched_line_ids:
                 wizard._compute_summary()
         return wizards
 
@@ -35,7 +36,6 @@ class ThaReferredFeeWizard(models.TransientModel):
         if not bills:
             return res
 
-        # Validate same vendor
         partners = bills.mapped('partner_id')
         if len(partners) > 1:
             raise UserError(
@@ -44,10 +44,24 @@ class ThaReferredFeeWizard(models.TransientModel):
 
         res['bill_ids'] = [(6, 0, active_ids)]
         res['partner_id'] = partners[0].id if partners else False
-        res['date_from'] = min(bills.mapped('invoice_date')) if bills.mapped('invoice_date') else False
-        res['date_to'] = max(bills.mapped('invoice_date')) if bills.mapped('invoice_date') else False
+        dates = [d for d in bills.mapped('invoice_date') if d]
+        res['date_from'] = min(dates) if dates else False
+        res['date_to'] = max(dates) if dates else False
 
+        group_vals, unmatched_vals = self._prepare_summary(bills)
+        res['group_line_ids'] = [(0, 0, vals) for vals in group_vals]
+        res['unmatched_line_ids'] = [(0, 0, vals) for vals in unmatched_vals]
         return res
+
+    def _bill_ref(self, bill):
+        return bill.vendor_ref or bill.ref or ''
+
+    def _bill_amount(self, bill):
+        """Fee amount as a positive figure (legacy report is unsigned)."""
+        amount = bill.amount_total or 0.0
+        if bill.move_type == 'in_refund':
+            return -amount
+        return amount
 
     def _parse_vendor_ref(self, vendor_ref):
         """Extract the description part from vendor_ref.
@@ -61,30 +75,25 @@ class ThaReferredFeeWizard(models.TransientModel):
             remainder = vendor_ref[len(prefix):]
         else:
             remainder = vendor_ref
-        # Take everything before the first comma
         comma_idx = remainder.find(',')
         if comma_idx > 0:
             return remainder[:comma_idx].strip()
         return remainder.strip()
 
     def _match_rule(self, rule, description):
-        """Check if a single rule matches the description."""
         value = rule.value or ''
         desc = description or ''
         if rule.rule_type == 'exact':
             return desc == value
-        elif rule.rule_type == 'contains':
+        if rule.rule_type == 'contains':
             return value.lower() in desc.lower()
-        elif rule.rule_type == 'starts_with':
+        if rule.rule_type == 'starts_with':
             return desc.lower().startswith(value.lower())
-        elif rule.rule_type == 'ends_with':
+        if rule.rule_type == 'ends_with':
             return desc.lower().endswith(value.lower())
         return False
 
     def _evaluate_group_rules(self, group, description):
-        """Evaluate all rules in a group with AND/OR connectors.
-        Returns True if the description matches the group.
-        """
         rules = group.rule_ids.sorted('sequence')
         if not rules:
             return False
@@ -98,81 +107,87 @@ class ThaReferredFeeWizard(models.TransientModel):
                 result = result or matched
         return result
 
-    def _compute_summary(self):
-        """Compute group summary and unmatched bills from selected bills."""
-        self.ensure_one()
-        GroupLine = self.env['tha.referred.fee.wizard.line']
-        UnmatchedLine = self.env['tha.referred.fee.wizard.unmatched']
-
-        # Clear existing lines
-        self.group_line_ids.unlink()
-        self.unmatched_line_ids.unlink()
-
+    def _prepare_summary(self, bills):
+        """Return (group_line_vals, unmatched_vals) without wizard_id."""
         groups = self.env['tha.referred.mapping.group'].search([], order='sequence, id')
         group_amounts = {g.id: 0.0 for g in groups}
-        unmatched_bills = []
+        unmatched = []
 
-        for bill in self.bill_ids:
-            description = self._parse_vendor_ref(bill.vendor_ref)
-            amount = bill.amount_total_signed if bill.move_type == 'in_invoice' else -bill.amount_total_signed
-
+        for bill in bills:
+            description = self._parse_vendor_ref(self._bill_ref(bill))
+            amount = self._bill_amount(bill)
             matched = False
             for group in groups:
                 if self._evaluate_group_rules(group, description):
                     group_amounts[group.id] += amount
                     matched = True
                     break
-
             if not matched:
-                unmatched_bills.append({
-                    'wizard_id': self.id,
+                unmatched.append({
                     'move_id': bill.id,
                     'move_name': bill.name,
                     'partner_id': bill.partner_id.id,
-                    'ref': bill.vendor_ref,
+                    'ref': self._bill_ref(bill),
                     'amount': amount,
                 })
 
-        # Create group summary lines
         group_lines = []
         for group in groups:
             if group_amounts[group.id] != 0.0:
                 group_lines.append({
-                    'wizard_id': self.id,
                     'group_id': group.id,
                     'group_name': group.name,
                     'amount': group_amounts[group.id],
                 })
-        if group_lines:
-            GroupLine.create(group_lines)
+        return group_lines, unmatched
 
-        # Create unmatched lines
-        if unmatched_bills:
-            UnmatchedLine.create(unmatched_bills)
+    def _compute_summary(self):
+        self.ensure_one()
+        self.group_line_ids.unlink()
+        self.unmatched_line_ids.unlink()
+        group_vals, unmatched_vals = self._prepare_summary(self.bill_ids)
+        if group_vals:
+            self.env['tha.referred.fee.wizard.line'].create([
+                dict(vals, wizard_id=self.id) for vals in group_vals
+            ])
+        if unmatched_vals:
+            self.env['tha.referred.fee.wizard.unmatched'].create([
+                dict(vals, wizard_id=self.id) for vals in unmatched_vals
+            ])
 
-    def action_compute(self):
-        """Compute the summary when wizard opens or refreshes."""
-        self._compute_summary()
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'tha.referred.fee.wizard',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'new',
-        }
+    def _print_now(self):
+        return fields.Datetime.context_timestamp(self, fields.Datetime.now())
+
+    def print_time(self):
+        return self._print_now().strftime('%H:%M')
+
+    def print_date(self):
+        now = self._print_now()
+        return '%d/%d/%d' % (now.day, now.month, now.year)
+
+    def print_date_from(self):
+        return format_date(self.env, self.date_from, date_format='dd-MMM-yyyy') if self.date_from else ''
+
+    def print_date_to(self):
+        return format_date(self.env, self.date_to, date_format='dd-MMM-yyyy') if self.date_to else ''
+
+    def print_subtotal(self):
+        return sum(self.group_line_ids.mapped('amount'))
 
     def action_print_pdf(self):
-        """Print PDF report."""
-        self._compute_summary()
+        self.ensure_one()
+        if not self.group_line_ids and self.bill_ids:
+            self._compute_summary()
         return self.env.ref(
             'tha_vhg_referred_fee_summary.action_report_referred_fee_pdf'
         ).report_action(self)
 
     def action_print_excel(self):
-        """Print Excel report as downloadable file."""
         import base64
         from ..report.referred_fee_excel_report import generate_xlsx
-        self._compute_summary()
+        self.ensure_one()
+        if not self.group_line_ids and self.bill_ids:
+            self._compute_summary()
         content, filename = generate_xlsx(self)
         attachment = self.env['ir.attachment'].create({
             'name': filename,
