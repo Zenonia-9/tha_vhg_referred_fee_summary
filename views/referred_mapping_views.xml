@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mapping Group List View -->
+    <record id="view_referred_mapping_group_list" model="ir.ui.view">
+        <field name="name">tha.referred.mapping.group.list</field>
+        <field name="model">tha.referred.mapping.group</field>
+        <field name="arch" type="xml">
+            <list string="Referred Mapping Groups">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="rule_count" string="Rules"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Mapping Group Form View -->
+    <record id="view_referred_mapping_group_form" model="ir.ui.view">
+        <field name="name">tha.referred.mapping.group.form</field>
+        <field name="model">tha.referred.mapping.group</field>
+        <field name="arch" type="xml">
+            <form string="Referred Mapping Group">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Group Name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. ECG, CT Scan, MRI"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="sequence"/>
+                    </group>
+                    <notebook>
+                        <page string="Rules" name="rules">
+                            <field name="rule_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="rule_type"/>
+                                    <field name="value"/>
+                                    <field name="connector"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Mapping Group Action -->
+    <record id="action_referred_mapping_group" model="ir.actions.act_window">
+        <field name="name">Referred Mapping</field>
+        <field name="res_model">tha.referred.mapping.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new mapping group
+            </p>
+            <p>
+                Define groups and their matching rules to categorize referred fee bills.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu: Accounting > Configuration > Referred Summary > Referred Mapping -->
+    <menuitem id="menu_referred_summary_root"
+              name="Referred Summary"
+              parent="account.menu_finance_configuration"
+              sequence="100"/>
+
+    <menuitem id="menu_referred_mapping"
+              name="Referred Mapping"
+              parent="menu_referred_summary_root"
+              action="action_referred_mapping_group"
+              sequence="10"/>
+</odoo>
+
+</parameter>

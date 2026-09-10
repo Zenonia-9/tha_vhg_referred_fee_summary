@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_referred_fee_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <h2><strong>VICTORIA HOSPITAL</strong></h2>
+                            <h3><strong>Referred fees</strong></h3>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="text-center mb-3">
+                            <strong>
+                                Between
+                                <span t-field="o.date_from" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
+                                And
+                                <span t-field="o.date_to" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
+                            </strong>
+                        </div>
+
+                        <!-- Dr Name -->
+                        <div class="mb-3">
+                            <strong>Dr Name: </strong>
+                            <span t-field="o.partner_id.name"/>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Group Summary Table -->
+                        <table class="table table-sm mt-3">
+                            <thead>
+                                <tr>
+                                    <th><strong>Description</strong></th>
+                                    <th class="text-end"><strong>Amount (MMK)</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.group_line_ids" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.group_name"/></td>
+                                        <td class="text-end">
+                                            <span t-field="line.amount"
+                                                  t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold" style="background-color: #00FFFF;">
+                                    <td>Sub total:</td>
+                                    <td class="text-end">
+                                        <span t-esc="sum(o.group_line_ids.mapped('amount'))"
+                                              t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- Unmatched Bills (if any) -->
+                        <t t-if="o.unmatched_line_ids">
+                            <h4 class="mt-4">Unmatched Bills</h4>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Number</th>
+                                        <th>Vendor</th>
+                                        <th>Reference</th>
+                                        <th class="text-end">Amount (MMK)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.unmatched_line_ids" t-as="uline">
+                                        <tr>
+                                            <td><span t-field="uline.move_name"/></td>
+                                            <td><span t-field="uline.partner_id.name"/></td>
+                                            <td><span t-field="uline.ref"/></td>
+                                            <td class="text-end">
+                                                <span t-field="uline.amount"
+                                                      t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+</parameter>

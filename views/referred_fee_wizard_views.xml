@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_referred_fee_wizard_form" model="ir.ui.view">
+        <field name="name">tha.referred.fee.wizard.form</field>
+        <field name="model">tha.referred.fee.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Referred Fee Summary">
+                <group>
+                    <group>
+                        <field name="date_from" string="Start Date"/>
+                        <field name="partner_id" string="Dr Name"/>
+                    </group>
+                    <group>
+                        <field name="date_to" string="End Date"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Group Summary" name="group_summary">
+                        <field name="group_line_ids" readonly="1">
+                            <list string="Group Summary" create="false" edit="false" delete="false">
+                                <field name="group_name" string="Description"/>
+                                <field name="amount" string="Amount (MMK)" sum="Total"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Unmatched Bills" name="unmatched">
+                        <field name="unmatched_line_ids" readonly="1">
+                            <list string="Unmatched Bills" create="false" edit="false" delete="false">
+                                <field name="move_name" string="Number"/>
+                                <field name="partner_id" string="Vendor"/>
+                                <field name="ref" string="Reference"/>
+                                <field name="amount" string="Amount (MMK)" sum="Total"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_print_pdf" string="Print PDF" type="object" class="btn-primary"/>
+                    <button name="action_print_excel" string="Print Excel" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_referred_fee_wizard" model="ir.actions.act_window">
+        <field name="name">Referred Fee Summary</field>
+        <field name="res_model">tha.referred.fee.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_bill_ids': active_ids}</field>
+    </record>
+</odoo>
+
+</parameter>

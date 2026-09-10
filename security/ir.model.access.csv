@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mapping_group_user,tha.referred.mapping.group.user,model_tha_referred_mapping_group,group_referred_fee_user,1,1,1,0
+access_mapping_group_manager,tha.referred.mapping.group.manager,model_tha_referred_mapping_group,group_referred_fee_manager,1,1,1,1
+access_mapping_rule_user,tha.referred.mapping.rule.user,model_tha_referred_mapping_rule,group_referred_fee_user,1,1,1,0
+access_mapping_rule_manager,tha.referred.mapping.rule.manager,model_tha_referred_mapping_rule,group_referred_fee_manager,1,1,1,1
+access_fee_wizard_user,tha.referred.fee.wizard.user,model_tha_referred_fee_wizard,group_referred_fee_user,1,1,1,1
+access_fee_wizard_line_user,tha.referred.fee.wizard.line.user,model_tha_referred_fee_wizard_line,group_referred_fee_user,1,1,1,1
+access_fee_wizard_unmatched_user,tha.referred.fee.wizard.unmatched.user,model_tha_referred_fee_wizard_unmatched,group_referred_fee_user,1,1,1,1
+
+</parameter>

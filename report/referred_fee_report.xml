@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- PDF Report Action -->
+    <record id="action_report_referred_fee_pdf" model="ir.actions.report">
+        <field name="name">Referred Fee Summary (PDF)</field>
+        <field name="model">tha.referred.fee.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tha_vhg_referred_fee_summary.report_referred_fee_template</field>
+        <field name="report_file">tha_vhg_referred_fee_summary.report_referred_fee_template</field>
+        <field name="binding_model_id" ref="model_tha_referred_fee_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>
+
+</parameter>

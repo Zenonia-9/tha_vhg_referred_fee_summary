@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Referred Summary button to account.move list view -->
+    <record id="view_account_move_referred_summary_button" model="ir.ui.view">
+        <field name="name">account.move.referred.summary.button</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(tha_vhg_referred_fee_summary.action_referred_fee_wizard)d"
+                            string="Referred Summary"
+                            type="action"
+                            class="btn-secondary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+</parameter>
