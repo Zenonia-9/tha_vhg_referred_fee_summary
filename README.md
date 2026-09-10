@@ -50,5 +50,3 @@ Thein Htoo Aung
 
 ## License
 LGPL-3
-
-</parameter>

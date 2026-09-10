@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 
@@ -16,6 +15,14 @@ class ThaReferredFeeWizard(models.TransientModel):
         'tha.referred.fee.wizard.line', 'wizard_id', string='Group Summary')
     unmatched_line_ids = fields.One2many(
         'tha.referred.fee.wizard.unmatched', 'wizard_id', string='Unmatched Bills')
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        wizards = super().create(vals_list)
+        for wizard in wizards:
+            if wizard.bill_ids:
+                wizard._compute_summary()
+        return wizards
 
     @api.model
     def default_get(self, fields_list):
@@ -106,7 +113,7 @@ class ThaReferredFeeWizard(models.TransientModel):
         unmatched_bills = []
 
         for bill in self.bill_ids:
-            description = self._parse_vendor_ref(bill.ref)
+            description = self._parse_vendor_ref(bill.vendor_ref)
             amount = bill.amount_total_signed if bill.move_type == 'in_invoice' else -bill.amount_total_signed
 
             matched = False
@@ -122,7 +129,7 @@ class ThaReferredFeeWizard(models.TransientModel):
                     'move_id': bill.id,
                     'move_name': bill.name,
                     'partner_id': bill.partner_id.id,
-                    'ref': bill.ref,
+                    'ref': bill.vendor_ref,
                     'amount': amount,
                 })
 
@@ -179,5 +186,3 @@ class ThaReferredFeeWizard(models.TransientModel):
             'url': '/web/content/%s?download=true' % attachment.id,
             'target': 'self',
         }
-
-</parameter>

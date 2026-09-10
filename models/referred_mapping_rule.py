@@ -23,5 +23,3 @@ class ThaReferredMappingRule(models.Model):
     ], string='Connector', default='or',
         help='Logical connector to the previous rule (ignored for first rule)')
     sequence = fields.Integer(string='Sequence', default=10)
-
-</parameter>

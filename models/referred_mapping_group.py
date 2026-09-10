@@ -18,5 +18,3 @@ class ThaReferredMappingGroup(models.Model):
     def _compute_rule_count(self):
         for group in self:
             group.rule_count = len(group.rule_ids)
-
-</parameter>

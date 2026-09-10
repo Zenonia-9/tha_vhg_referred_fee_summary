@@ -6,5 +6,3 @@ access_mapping_rule_manager,tha.referred.mapping.rule.manager,model_tha_referred
 access_fee_wizard_user,tha.referred.fee.wizard.user,model_tha_referred_fee_wizard,group_referred_fee_user,1,1,1,1
 access_fee_wizard_line_user,tha.referred.fee.wizard.line.user,model_tha_referred_fee_wizard_line,group_referred_fee_user,1,1,1,1
 access_fee_wizard_unmatched_user,tha.referred.fee.wizard.unmatched.user,model_tha_referred_fee_wizard_unmatched,group_referred_fee_user,1,1,1,1
-
-</parameter>

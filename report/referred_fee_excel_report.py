@@ -91,5 +91,3 @@ def generate_xlsx(wizard):
     filename = 'referred_fee_summary_%s_%s.xlsx' % (
         date_from.replace('-', ''), date_to.replace('-', ''))
     return content, filename
-
-</parameter>

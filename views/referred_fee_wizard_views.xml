@@ -53,5 +53,3 @@
         <field name="context">{'default_bill_ids': active_ids}</field>
     </record>
 </odoo>
-
-</parameter>
