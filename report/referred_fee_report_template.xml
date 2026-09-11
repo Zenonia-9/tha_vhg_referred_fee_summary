@@ -156,15 +156,21 @@
                             border-right: none;
                         }
 
+                        .rf-col-seq {
+                            width: 8%;
+                            text-align: center;
+                        }
+
                         .rf-col-desc {
                             text-align: left;
                         }
 
                         .rf-col-amt {
+                            width: 30%;
                             text-align: right;
                         }
 
-                        /* Subtotal Section Using Floats to prevent wkhtmltopdf table border inheritance */
+                        /* Subtotal Section Using Floats */
                         .rf-summary-box {
                             float: right;
                             width: 48%;
@@ -218,7 +224,7 @@
                             </div>
 
                             <div class="rf-title-block">
-                                <div class="rf-report-title">Referred Fees</div>
+                                <div class="rf-report-title">Commission Fee</div>
                                 <div class="rf-date-range">
                                     Between <t t-esc="o.print_date_from()"/> And <t t-esc="o.print_date_to()"/>
                                 </div>
@@ -234,21 +240,25 @@
                         <table class="rf-table">
                             <thead>
                                 <tr>
+                                    <th class="rf-col-seq">No.</th>
                                     <th class="rf-col-desc">Description</th>
                                     <th class="rf-col-amt">Amount (MMK)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="o.group_line_ids" t-as="line">
+                                <t t-set="seq" t-value="1"/>
+                                <t t-foreach="o.group_line_ids.sorted(key=lambda l: l.amount, reverse=True)" t-as="line">
                                     <tr>
+                                        <td class="rf-col-seq"><span t-esc="seq"/></td>
                                         <td class="rf-col-desc"><span t-esc="line.group_name or ''"/></td>
                                         <td class="rf-col-amt"><span t-esc="'{:,.2f}'.format(line.amount)"/></td>
                                     </tr>
+                                    <t t-set="seq" t-value="seq + 1"/>
                                 </t>
                             </tbody>
                         </table>
 
-                        <!-- Subtotal Badge without Table Markup -->
+                        <!-- Subtotal Badge -->
                         <div class="rf-clearfix">
                             <div class="rf-summary-box rf-clearfix">
                                 <div class="rf-summary-left">Subtotal</div>

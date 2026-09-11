@@ -8,7 +8,6 @@
     'license': 'LGPL-3',
     'depends': [
         'account',
-        'anzer_odoo_integration',
     ],
     'data': [
         'security/security.xml',
