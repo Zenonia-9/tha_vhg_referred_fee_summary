@@ -5,14 +5,15 @@
             <t t-foreach="docs" t-as="o">
                 <div class="article">
                     <style>
-                        html, body { height: auto !important; }
+                        html, body { 
+                            height: auto !important; 
+                        }
                         body.container, .container {
                             max-width: 100% !important;
                             width: 100% !important;
                             padding: 0 !important;
                             margin: 0 !important;
                         }
-                        .header,
                         #minimal_layout_report_headers,
                         .o_report_layout_boxed,
                         .o_company_letterhead,
@@ -23,148 +24,250 @@
                             height: 0 !important;
                             overflow: hidden !important;
                         }
-                        .rf-wrap {
+
+                        /* High-Contrast Print Styling */
+                        .rf-container {
                             font-family: Arial, Helvetica, sans-serif;
                             font-size: 13px;
-                            color: #000;
+                            color: #000000;
+                            padding: 10px 0;
                         }
-                        .rf-top {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin: 0 0 2px 0;
-                        }
-                        .rf-top td {
-                            border: none;
-                            padding: 0;
-                            vertical-align: top;
-                            font-size: 12px;
-                        }
-                        .rf-hospital {
-                            text-align: center;
-                            letter-spacing: 4px;
-                            font-size: 13px;
-                            font-weight: 600;
-                            margin: 0 0 10px 0;
-                        }
-                        .rf-meta-left { text-align: left; white-space: nowrap; width: 28%; }
-                        .rf-meta-center { text-align: center; width: 44%; }
-                        .rf-meta-right { text-align: right; white-space: nowrap; width: 28%; }
-                        .rf-title {
-                            font-size: 20px;
-                            font-weight: 700;
-                            margin: 0;
-                        }
-                        .rf-range {
-                            font-size: 13px;
-                            font-weight: 700;
-                            margin: 4px 0 12px 0;
-                        }
-                        .rf-dr {
-                            font-size: 14px;
-                            margin: 0 0 2px 0;
-                        }
-                        .rf-dr .lbl { font-weight: 700; text-decoration: underline; }
-                        .rf-dr .val { font-weight: 700; text-decoration: underline; }
-                        .rf-rule {
-                            border: none;
-                            border-top: 2px solid #000;
-                            margin: 2px 0 14px 0;
-                        }
-                        table.rf-lines {
-                            width: 100%;
-                            border-collapse: collapse;
-                        }
-                        table.rf-lines th,
-                        table.rf-lines td {
-                            border: none;
-                            padding: 3px 8px;
-                            font-size: 13px;
-                        }
-                        table.rf-lines th {
-                            font-weight: 700;
-                            text-decoration: underline;
-                        }
-                        table.rf-lines th.amt,
-                        table.rf-lines td.amt {
-                            text-align: right;
-                            white-space: nowrap;
-                            width: 30%;
-                        }
-                        table.rf-lines td.desc { padding-left: 28px; }
-                        .rf-sub td {
-                            padding-top: 14px;
-                        }
-                        .rf-sub .box {
-                            display: inline-block;
-                            background: #00FFFF;
-                            font-weight: 700;
-                            padding: 2px 10px;
+
+                        /* Header Card */
+                        .rf-header-card {
+                            background-color: #f8fafc;
+                            border-radius: 8px;
+                            padding: 16px 20px;
+                            margin-bottom: 20px;
+                            border: 1px solid #000000;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .rf-sub .box.amt {
-                            min-width: 140px;
+
+                        .rf-top-bar {
+                            width: 100%;
+                            display: table;
+                            margin-bottom: 12px;
+                        }
+
+                        .rf-meta-info {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 30%;
+                            font-size: 13px;
+                            font-weight: 600;
+                            color: #000000;
+                        }
+
+                        .rf-hospital-name {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 40%;
+                            text-align: center;
+                            font-size: 16px;
+                            font-weight: 800;
+                            letter-spacing: 2px;
+                            color: #000000;
+                            text-transform: uppercase;
+                        }
+
+                        .rf-empty-cell {
+                            display: table-cell;
+                            width: 30%;
+                        }
+
+                        .rf-title-block {
+                            text-align: center;
+                            margin-bottom: 12px;
+                        }
+
+                        .rf-report-title {
+                            font-size: 22px;
+                            font-weight: 800;
+                            color: #000000;
+                            margin-bottom: 6px;
+                        }
+
+                        .rf-date-range {
+                            font-size: 14px;
+                            font-weight: 700;
+                            color: #000000;
+                            background-color: #e2e8f0;
+                            display: inline-block;
+                            padding: 4px 14px;
+                            border-radius: 12px;
+                            border: 1px solid #000000;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+
+                        .rf-doctor-info {
+                            border-top: 1px solid #000000;
+                            padding-top: 12px;
+                            margin-top: 12px;
+                            font-size: 14px;
+                        }
+
+                        .rf-dr-label {
+                            color: #000000;
+                            font-weight: 600;
+                        }
+
+                        .rf-dr-name {
+                            font-weight: 800;
+                            color: #000000;
+                        }
+
+                        /* High-Contrast Table Layout */
+                        .rf-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 24px;
+                            border: 1px solid #000000;
+                        }
+
+                        .rf-table th {
+                            padding: 10px 16px;
+                            font-size: 13px;
+                            font-weight: 800;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            color: #000000;
+                            border-bottom: 2px solid #000000;
+                            border-right: 1px solid #000000;
+                            background-color: #f1f5f9;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+
+                        .rf-table th:last-child {
+                            border-right: none;
+                        }
+
+                        .rf-table td {
+                            padding: 12px 16px;
+                            border-bottom: 1px solid #000000;
+                            border-right: 1px solid #000000;
+                            color: #000000;
+                            font-weight: 600;
+                        }
+
+                        .rf-table td:last-child {
+                            border-right: none;
+                        }
+
+                        .rf-col-desc {
+                            text-align: left;
+                        }
+
+                        .rf-col-amt {
                             text-align: right;
                         }
+
+                        /* Clean Subtotal Box (Fixed Overlap) */
+                        .rf-summary-wrapper {
+                            width: 100%;
+                            display: table;
+                        }
+
+                        .rf-summary-spacer {
+                            display: table-cell;
+                            width: 50%;
+                        }
+
+                        .rf-summary-box {
+                            display: table-cell;
+                            width: 50%;
+                            background-color: #0284c7;
+                            border-radius: 6px;
+                            padding: 10px 16px;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+
+                        .rf-summary-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+
+                        .rf-summary-table td {
+                            border: none !important; /* Removes cell outline rendering in wkhtmltopdf */
+                        }
+
+                        .rf-summary-label {
+                            text-align: left;
+                            font-size: 15px;
+                            font-weight: 700;
+                            color: #ffffff;
+                            border-right: 1px solid #ffffff !important;
+                            padding-right: 12px;
+                        }
+
+                        .rf-summary-value {
+                            text-align: right;
+                            font-size: 18px;
+                            font-weight: 800;
+                            color: #ffffff;
+                            padding-left: 12px;
+                        }
                     </style>
-                    <div class="footer" style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">
-                        <div style="text-align: right;">Page: <span class="page"/> of <span class="topage"/></div>
-                    </div>
-                    <div class="rf-wrap">
-                        <div class="rf-hospital">VICTORIA HOSPITAL</div>
-                        <table class="rf-top">
-                            <tr>
-                                <td class="rf-meta-left">
-                                    <span t-esc="o.print_time()"/>
-                                    &#160;&#160;&#160;
-                                    <span t-esc="o.print_date()"/>
-                                </td>
-                                <td class="rf-meta-center">
-                                    <div class="rf-title">Referred fees</div>
-                                </td>
-                                <td class="rf-meta-right">
-                                    Page: <span class="page"/> of <span class="topage"/>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="rf-meta-center rf-range">
-                            Between
-                            <t t-esc="o.print_date_from()"/>
-                            And
-                            <t t-esc="o.print_date_to()"/>
+
+                    <div class="rf-container">
+                        <!-- Header Section -->
+                        <div class="rf-header-card">
+                            <div class="rf-top-bar">
+                                <div class="rf-meta-info">
+                                    <span t-esc="o.print_time()"/> &#183; <span t-esc="o.print_date()"/>
+                                </div>
+                                <div class="rf-hospital-name">
+                                    Victoria Hospital
+                                </div>
+                                <div class="rf-empty-cell"></div>
+                            </div>
+
+                            <div class="rf-title-block">
+                                <div class="rf-report-title">Referred Fees</div>
+                                <div class="rf-date-range">
+                                    Between <t t-esc="o.print_date_from()"/> And <t t-esc="o.print_date_to()"/>
+                                </div>
+                            </div>
+
+                            <div class="rf-doctor-info">
+                                <span class="rf-dr-label">Doctor Name:</span>
+                                <span class="rf-dr-name" t-esc="o.partner_id.name or ''"/>
+                            </div>
                         </div>
-                        <div class="rf-dr">
-                            <span class="lbl">Dr Name:</span>
-                            &#160;
-                            <span class="val" t-esc="o.partner_id.name or ''"/>
-                        </div>
-                        <hr class="rf-rule"/>
-                        <table class="rf-lines">
+
+                        <!-- High-Contrast Data Table -->
+                        <table class="rf-table">
                             <thead>
                                 <tr>
-                                    <th>Description</th>
-                                    <th class="amt">Amount &#160;(MMK)</th>
+                                    <th class="rf-col-desc">Description</th>
+                                    <th class="rf-col-amt">Amount (MMK)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="o.group_line_ids" t-as="line">
                                     <tr>
-                                        <td class="desc"><span t-esc="line.group_name or ''"/></td>
-                                        <td class="amt">
-                                            <span t-esc="'{:,.2f}'.format(line.amount)"/>
-                                        </td>
+                                        <td class="rf-col-desc"><span t-esc="line.group_name or ''"/></td>
+                                        <td class="rf-col-amt"><span t-esc="'{:,.2f}'.format(line.amount)"/></td>
                                     </tr>
                                 </t>
-                                <tr class="rf-sub">
-                                    <td style="text-align: center;">
-                                        <span class="box">Sub total:</span>
-                                    </td>
-                                    <td class="amt">
-                                        <span class="box amt" t-esc="'{:,.2f}'.format(o.print_subtotal())"/>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
+
+                        <!-- Subtotal Section -->
+                        <div class="rf-summary-wrapper">
+                            <div class="rf-summary-spacer"></div>
+                            <div class="rf-summary-box">
+                                <table class="rf-summary-table">
+                                    <tr>
+                                        <td class="rf-summary-label">Subtotal</td>
+                                        <td class="rf-summary-value"><span t-esc="'{:,.2f}'.format(o.print_subtotal())"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </t>
