@@ -164,51 +164,42 @@
                             text-align: right;
                         }
 
-                        /* Clean Subtotal Box (Fixed Overlap) */
+                        /* Flexbox Subtotal Container (Completely removes table border inheritance) */
                         .rf-summary-wrapper {
                             width: 100%;
-                            display: table;
-                        }
-
-                        .rf-summary-spacer {
-                            display: table-cell;
-                            width: 50%;
+                            display: flex;
+                            justify-content: flex-end;
                         }
 
                         .rf-summary-box {
-                            display: table-cell;
                             width: 50%;
                             background-color: #0284c7;
                             border-radius: 6px;
                             padding: 10px 16px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            box-sizing: border-box;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
 
-                        .rf-summary-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                        }
-
-                        .rf-summary-table td {
-                            border: none !important; /* Removes cell outline rendering in wkhtmltopdf */
-                        }
-
                         .rf-summary-label {
-                            text-align: left;
                             font-size: 15px;
                             font-weight: 700;
                             color: #ffffff;
-                            border-right: 1px solid #ffffff !important;
                             padding-right: 12px;
+                            border-right: 1px solid #ffffff;
+                            flex: 1;
+                            text-align: left;
                         }
 
                         .rf-summary-value {
-                            text-align: right;
                             font-size: 18px;
                             font-weight: 800;
                             color: #ffffff;
                             padding-left: 12px;
+                            text-align: right;
                         }
                     </style>
 
@@ -256,16 +247,11 @@
                             </tbody>
                         </table>
 
-                        <!-- Subtotal Section -->
+                        <!-- Flexbox Subtotal Section -->
                         <div class="rf-summary-wrapper">
-                            <div class="rf-summary-spacer"></div>
                             <div class="rf-summary-box">
-                                <table class="rf-summary-table">
-                                    <tr>
-                                        <td class="rf-summary-label">Subtotal</td>
-                                        <td class="rf-summary-value"><span t-esc="'{:,.2f}'.format(o.print_subtotal())"/></td>
-                                    </tr>
-                                </table>
+                                <div class="rf-summary-label">Subtotal</div>
+                                <div class="rf-summary-value"><span t-esc="'{:,.2f}'.format(o.print_subtotal())"/></div>
                             </div>
                         </div>
                     </div>
