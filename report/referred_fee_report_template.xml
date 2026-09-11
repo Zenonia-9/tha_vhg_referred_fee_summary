@@ -118,7 +118,7 @@
                             color: #000000;
                         }
 
-                        /* High-Contrast Table Layout */
+                        /* High-Contrast Data Table */
                         .rf-table {
                             width: 100%;
                             border-collapse: collapse;
@@ -164,42 +164,43 @@
                             text-align: right;
                         }
 
-                        /* Flexbox Subtotal Container (Completely removes table border inheritance) */
-                        .rf-summary-wrapper {
-                            width: 100%;
-                            display: flex;
-                            justify-content: flex-end;
-                        }
-
+                        /* Subtotal Section Using Floats to prevent wkhtmltopdf table border inheritance */
                         .rf-summary-box {
-                            width: 50%;
+                            float: right;
+                            width: 48%;
                             background-color: #0284c7;
                             border-radius: 6px;
                             padding: 10px 16px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
                             box-sizing: border-box;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
 
-                        .rf-summary-label {
+                        .rf-summary-left {
+                            float: left;
+                            width: 45%;
                             font-size: 15px;
                             font-weight: 700;
                             color: #ffffff;
-                            padding-right: 12px;
                             border-right: 1px solid #ffffff;
-                            flex: 1;
+                            box-sizing: border-box;
                             text-align: left;
                         }
 
-                        .rf-summary-value {
+                        .rf-summary-right {
+                            float: right;
+                            width: 50%;
                             font-size: 18px;
                             font-weight: 800;
                             color: #ffffff;
-                            padding-left: 12px;
                             text-align: right;
+                            box-sizing: border-box;
+                        }
+
+                        .rf-clearfix::after {
+                            content: "";
+                            clear: both;
+                            display: table;
                         }
                     </style>
 
@@ -247,11 +248,11 @@
                             </tbody>
                         </table>
 
-                        <!-- Flexbox Subtotal Section -->
-                        <div class="rf-summary-wrapper">
-                            <div class="rf-summary-box">
-                                <div class="rf-summary-label">Subtotal</div>
-                                <div class="rf-summary-value"><span t-esc="'{:,.2f}'.format(o.print_subtotal())"/></div>
+                        <!-- Subtotal Badge without Table Markup -->
+                        <div class="rf-clearfix">
+                            <div class="rf-summary-box rf-clearfix">
+                                <div class="rf-summary-left">Subtotal</div>
+                                <div class="rf-summary-right"><span t-esc="'{:,.2f}'.format(o.print_subtotal())"/></div>
                             </div>
                         </div>
                     </div>
