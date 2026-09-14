@@ -63,22 +63,55 @@ class ThaReferredFeeWizard(models.TransientModel):
             return -amount
         return amount
 
+    # def _parse_vendor_ref(self, vendor_ref):
+    #     """Extract the description part from vendor_ref.
+    #     Format: 'Referred Fee - Holter ECG  (ECG), 150105 PHYO MYINT, U'
+    #     Returns the middle part between 'Referred Fee - ' and the first comma.
+    #     """
+    #     if not vendor_ref:
+    #         return ''
+    #     prefix = 'Referred Fee - '
+    #     if vendor_ref.startswith(prefix):
+    #         remainder = vendor_ref[len(prefix):]
+    #     else:
+    #         remainder = vendor_ref
+    #     comma_idx = remainder.find(',')
+    #     if comma_idx > 0:
+    #         return remainder[:comma_idx].strip()
+    #     return remainder.strip()
+
     def _parse_vendor_ref(self, vendor_ref):
         """Extract the description part from vendor_ref.
-        Format: 'Referred Fee - Holter ECG  (ECG), 150105 PHYO MYINT, U'
-        Returns the middle part between 'Referred Fee - ' and the first comma.
+
+        Expected format:
+            Referred Fee - <DESCRIPTION>, <PATIENT ID> <PATIENT NAME>, <TYPE>
+
+        Example:
+            Referred Fee - Lumbar Spine (AP,LAT) (X-Ray), 658383 MYINT SOE , U
+
+        Returns:
+            Lumbar Spine (AP,LAT) (X-Ray)
         """
         if not vendor_ref:
             return ''
+
         prefix = 'Referred Fee - '
         if vendor_ref.startswith(prefix):
-            remainder = vendor_ref[len(prefix):]
+            remainder = vendor_ref[len(prefix):].strip()
         else:
-            remainder = vendor_ref
-        comma_idx = remainder.find(',')
-        if comma_idx > 0:
-            return remainder[:comma_idx].strip()
-        return remainder.strip()
+            remainder = vendor_ref.strip()
+
+        # The patient information starts with a numeric patient ID.
+        # Find the comma followed by whitespace + digits.
+        import re
+
+        match = re.search(r',\s*\d+\s+', remainder)
+        if match:
+            return remainder[:match.start()].strip()
+
+        # Fallback: if the expected patient ID pattern is not found,
+        # return the whole remaining reference.
+        return remainder
 
     def _match_rule(self, rule, description):
         value = rule.value or ''
