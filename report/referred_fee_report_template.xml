@@ -214,7 +214,8 @@
                         <div class="rf-header-card">
                             <div class="rf-top-bar">
                                 <div class="rf-meta-info">
-                                    <span t-esc="o.print_time()"/> &#183; <span t-esc="o.print_date()"/>
+                                    <span t-esc="o.print_time()"/> &#183; <span t-esc="o.print_date()"/><br/>
+                                    <span>Username: </span><span t-esc="o.print_user_name()"/>
                                 </div>
                                 <div class="rf-hospital-name">
                                     Victoria Hospital
@@ -232,6 +233,8 @@
                             <div class="rf-doctor-info">
                                 <span class="rf-dr-label">Doctor Name:</span>
                                 <span class="rf-dr-name" t-esc="o.partner_id.name or ''"/>
+                                <span class="rf-dr-label" style="margin-left: 28px;">Business Partner Code:</span>
+                                <span class="rf-dr-name" t-esc="o.business_partner_code or ''"/>
                             </div>
                         </div>
 

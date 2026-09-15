@@ -10,6 +10,7 @@
                     <group>
                         <field name="date_from" string="Start Date"/>
                         <field name="partner_id" string="Dr Name"/>
+                        <field name="business_partner_code" string="Business Partner Code"/>
                     </group>
                     <group>
                         <field name="date_to" string="End Date"/>

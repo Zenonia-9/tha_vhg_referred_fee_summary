@@ -24,7 +24,7 @@ def generate_xlsx(wizard):
     title_fmt = workbook.add_format({
         'bold': True, 'font_size': 16, 'align': 'center', 'font_name': 'Arial'})
     meta_fmt = workbook.add_format({
-        'font_size': 11, 'font_name': 'Arial'})
+        'font_size': 11, 'font_name': 'Arial', 'text_wrap': True})
     meta_right_fmt = workbook.add_format({
         'font_size': 11, 'align': 'right', 'font_name': 'Arial'})
     date_fmt = workbook.add_format({
@@ -51,14 +51,17 @@ def generate_xlsx(wizard):
 
     now = datetime.now()
     sheet.merge_range(0, 0, 0, 1, 'VICTORIA HOSPITAL', hospital_fmt)
-    sheet.write(1, 0, '%s    %s' % (now.strftime('%H:%M'), now.strftime('%-d/%-m/%Y')), meta_fmt)
+    sheet.write(1, 0, '%s    %s\nUsername: %s' % (
+        now.strftime('%H:%M'), wizard.print_date(), wizard.print_user_name()), meta_fmt)
     sheet.merge_range(2, 0, 2, 1, 'Referred fees', title_fmt)
 
-    date_from = wizard.date_from.strftime('%d-%b-%Y') if wizard.date_from else ''
-    date_to = wizard.date_to.strftime('%d-%b-%Y') if wizard.date_to else ''
+    date_from = wizard.print_date_from()
+    date_to = wizard.print_date_to()
     sheet.merge_range(3, 0, 3, 1, 'Between %s And %s' % (date_from, date_to), date_fmt)
 
     sheet.write(5, 0, 'Dr Name: %s' % (wizard.partner_id.name or ''), dr_fmt)
+    sheet.write(5, 1, 'Business Partner Code: %s' % (
+        wizard.business_partner_code or ''), dr_fmt)
 
     row = 7
     sheet.write(row, 0, 'Description', col_header_fmt)

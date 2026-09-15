@@ -2,12 +2,13 @@
 {
     'name': 'VHG Referred Fee Summary',
     'summary': 'Referred fee summary reports (PDF/Excel) with configurable group mapping from vendor bills.',
-    'version': '19.0.1.2.3',
+    'version': '19.0.1.3.0',
     'category': 'Accounting/Accounting',
     'author': 'Thein Htoo Aung',
     'license': 'LGPL-3',
     'depends': [
         'account',
+        'anzer',
     ],
     'data': [
         'security/security.xml',

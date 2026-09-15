@@ -1,21 +1,35 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import UserError
-from odoo.tools import format_date
 
 
 class ThaReferredFeeWizard(models.TransientModel):
     _name = 'tha.referred.fee.wizard'
     _description = 'Referred Fee Summary Wizard'
 
-    date_from = fields.Date(string='Start Date', readonly=True)
-    date_to = fields.Date(string='End Date', readonly=True)
+    date_from = fields.Date(string='Start Date')
+    date_to = fields.Date(string='End Date')
     partner_id = fields.Many2one('res.partner', string='Vendor', readonly=True)
+    business_partner_code = fields.Char(
+        compute='_compute_business_partner_code',
+        string='Business Partner Code',
+        readonly=True,
+    )
     bill_ids = fields.Many2many('account.move', string='Selected Bills')
     group_line_ids = fields.One2many(
         'tha.referred.fee.wizard.line', 'wizard_id', string='Group Summary')
     unmatched_line_ids = fields.One2many(
         'tha.referred.fee.wizard.unmatched', 'wizard_id', string='Unmatched Bills')
+
+    @api.depends('partner_id')
+    def _compute_business_partner_code(self):
+        for wizard in self:
+            partner = wizard.partner_id
+            wizard.business_partner_code = (
+                partner.business_partner_code
+                if partner and 'business_partner_code' in partner._fields
+                else ''
+            )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -111,7 +125,7 @@ class ThaReferredFeeWizard(models.TransientModel):
 
         # Fallback: if the expected patient ID pattern is not found,
         # return the whole remaining reference.
-        return remainder
+        return remainder.strip()
 
     def _match_rule(self, rule, description):
         value = rule.value or ''
@@ -195,14 +209,16 @@ class ThaReferredFeeWizard(models.TransientModel):
         return self._print_now().strftime('%H:%M')
 
     def print_date(self):
-        now = self._print_now()
-        return '%d/%d/%d' % (now.day, now.month, now.year)
+        return self._print_now().strftime('%d-%b-%Y')
 
     def print_date_from(self):
-        return format_date(self.env, self.date_from, date_format='dd-MMM-yyyy') if self.date_from else ''
+        return self.date_from.strftime('%d-%b-%Y') if self.date_from else ''
 
     def print_date_to(self):
-        return format_date(self.env, self.date_to, date_format='dd-MMM-yyyy') if self.date_to else ''
+        return self.date_to.strftime('%d-%b-%Y') if self.date_to else ''
+
+    def print_user_name(self):
+        return self.env.user.name or ''
 
     def print_subtotal(self):
         return sum(self.group_line_ids.mapped('amount'))
