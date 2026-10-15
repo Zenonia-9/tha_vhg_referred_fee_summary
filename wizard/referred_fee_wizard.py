@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from calendar import monthrange
 
 
 class ThaReferredFeeWizard(models.TransientModel):
@@ -59,8 +60,16 @@ class ThaReferredFeeWizard(models.TransientModel):
         res['bill_ids'] = [(6, 0, active_ids)]
         res['partner_id'] = partners[0].id if partners else False
         dates = [d for d in bills.mapped('invoice_date') if d]
-        res['date_from'] = min(dates) if dates else False
-        res['date_to'] = max(dates) if dates else False
+        if dates:
+            first = min(dates).replace(day=1)
+            last_month = max(dates)
+            last = last_month.replace(
+                day=monthrange(last_month.year, last_month.month)[1])
+            res['date_from'] = first
+            res['date_to'] = last
+        else:
+            res['date_from'] = False
+            res['date_to'] = False
 
         group_vals, unmatched_vals = self._prepare_summary(bills)
         res['group_line_ids'] = [(0, 0, vals) for vals in group_vals]
